@@ -134,12 +134,32 @@ Response includes pagination metadata:
 ```json
 {
   "isSuccess": false,
+  "data": null,
   "error": {
-    "message": "Validation failed.",
-    "errorCode": "ValidationFailed",
-    "errors": {
-      "customerName": "Customer name is required."
-    }
+    "id": "b0481fad-2882-4866-9271-e4cfdf053723",
+    "message": null,
+    "errors": [
+      {
+        "field": "Date",
+        "message": "Appointment date must be in the future."
+      },
+      {
+        "field": "CustomerName",
+        "message": "Customer name is required."
+      },
+      {
+        "field": "CustomerName",
+        "message": "Customer name is required."
+      }
+    ],
+    "errorCode": 1,
+    "exception": null
+  },
+  "meta": {
+    "traceId": "c4cd9ce0cff7fa10dbcf4138150c1b8b",
+    "spanId": "6249406b94375f41",
+    "timestamp": "2026-01-06T16:36:41.8054205+00:00",
+    "page": null
   }
 }
 ```
@@ -162,6 +182,16 @@ Response includes pagination metadata:
 - Unhandled exceptions are caught by middleware
 - Returned as structured error responses
 - Stack trace logged for debugging
+
+```json
+"error": {
+    "id": "ee572a6a-1cb1-48a1-b13d-0da15a6ad7c0",
+    "message": "Failed to fetch one of the appointments from the database.",
+    "errors": null,
+    "errorCode": 13,
+    "exception": null
+  },
+```
 
 ## API Endpoints
 
