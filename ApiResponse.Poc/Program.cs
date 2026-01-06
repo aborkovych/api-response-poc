@@ -30,6 +30,7 @@ builder.Services.AddFluentValidationAutoValidation(c =>
 
 builder.Services.AddOpenApi();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -49,10 +50,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseExceptionHandler();
 app.UseRouting();
 app.MapControllers();
-
-app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
