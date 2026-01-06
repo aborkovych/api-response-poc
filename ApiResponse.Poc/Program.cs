@@ -29,6 +29,7 @@ builder.Services.AddFluentValidationAutoValidation(c =>
 });
 
 builder.Services.AddOpenApi();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 var app = builder.Build();
 
@@ -37,8 +38,9 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference("/docs", options =>
     {
-        options.WithTitle("My API Documentation")
+        options.WithTitle("Result pattern POC")
             .WithTheme(ScalarTheme.Saturn)
+            .AlwaysShowDeveloperTools()
             .EnableDarkMode()
             .ExpandAllTags()
             .SortTagsAlphabetically()
@@ -49,7 +51,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.MapControllers();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+app.UseExceptionHandler();
+
 app.UseHttpsRedirection();
 
 await app.RunAsync();

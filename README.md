@@ -197,7 +197,7 @@ Content-Type: application/json
 }
 ```
 
-**Response** (201 Created):
+**Response** (200 OK):
 - Returns created appointment
 - Includes Location header linking to GET endpoint
 - 10% chance to simulate database error (500 Internal Server Error)
@@ -232,8 +232,8 @@ dotnet run
 ```
 
 The API will be available at:
-- API: `https://localhost:7001`
-- OpenAPI Documentation: `https://localhost:7001/scalar`
+- API: `https://localhost:7037`
+- OpenAPI Documentation: `https://localhost:7037/docs`
 
 ### Testing
 
@@ -295,17 +295,4 @@ ApiResponse.Poc/
 5. **Extensibility**: Easy to add new validators and error types
 6. **Testing**: Structured responses make testing straightforward
 
-## Future Enhancements
-
-- [ ] Add authentication/authorization
-- [ ] Implement repository pattern for data access
-- [ ] Add caching support
-- [ ] Implement advanced filtering and sorting
-- [ ] Add logging and monitoring
-- [ ] Add API versioning
-- [ ] Add rate limiting
-
-## License
-
-This project is provided as a proof-of-concept and is open for educational purposes.
 

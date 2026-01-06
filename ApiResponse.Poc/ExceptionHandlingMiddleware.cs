@@ -1,48 +1,48 @@
 using System.Text.Json;
 using ApiResponse.Poc.Models;
 using ApiResponse.Poc.Responses;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace ApiResponse.Poc;
 
-public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
-    private static readonly JsonSerializerOptions Options = new ()
+    private static readonly JsonSerializerOptions Options = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
-    public async Task InvokeAsync(HttpContext context)
+
+    public async ValueTask<bool> TryHandleAsync(
+        HttpContext httpContext,
+        Exception exception,
+        CancellationToken cancellationToken)
     {
-        try
+        logger.LogError(exception, "An unhandled exception has occurred.");
+
+        httpContext.Response.ContentType = "application/json";
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+        var errorResponse = new ErrorResponse
         {
-            await next(context);
-        }
-        catch (Exception ex)
+            Message = "An unexpected error occurred.",
+            ErrorCode = ErrorCode.Unknown,
+            Exception = new ResponseException
+            {
+                Message = exception.Message,
+                Details = exception.InnerException?.Message,
+                StackTrace = exception.StackTrace
+            }
+        };
+
+        var apiResponse = ApiResponse<object>.Failure(errorResponse, new MetaInfo
         {
-            logger.LogError(ex, "An unhandled exception has occurred.");
+            TraceId = httpContext.TraceIdentifier
+        });
 
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        var json = JsonSerializer.Serialize(apiResponse, Options);
+        await httpContext.Response.WriteAsync(json, cancellationToken);
 
-            var errorResponse = new ErrorResponse
-            {
-                Message = "An unexpected error occurred.",
-                ErrorCode = ErrorCode.Unknown,
-                Exception = new ResponseException
-                {
-                    Message = ex.Message,
-                    Details = ex.InnerException?.Message,
-                    StackTrace = ex.StackTrace
-                }
-            };
-
-            var apiResponse = ApiResponse<object>.Failure(errorResponse, new MetaInfo
-            {
-                TraceId = context.TraceIdentifier
-            });
-
-            var json = JsonSerializer.Serialize(apiResponse, Options);
-            await context.Response.WriteAsync(json);
-        }
+        return true;
     }
 }
 

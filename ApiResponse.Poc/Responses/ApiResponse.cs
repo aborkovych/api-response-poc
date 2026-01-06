@@ -9,16 +9,25 @@ namespace ApiResponse.Poc.Responses;
 /// <typeparam name="T">Type of response data</typeparam>
 public sealed class ApiResponse<T>
 {
-    public bool IsSuccess { get; set; }
+    /// <summary>
+    /// Indicates whether the response is successful
+    /// </summary>
+    public bool IsSuccess { get; init; }
 
+    /// <summary>
     /// Only present when Success = true
-    public T Data { get; set; }
+    /// </summary>
+    public T Data { get; init; }
 
-    // Only present when Success = false
-    public ErrorResponse Error { get; set; }
+    /// <summary>
+    /// Only present when Success = false
+    /// </summary>
+    public ErrorResponse Error { get; init; }
 
-    // Always allowed, optional
-    public MetaInfo Meta { get; set; }
+    /// <summary>
+    /// Meta information about the response
+    /// </summary>
+    public MetaInfo Meta { get; init; }
 
     public static ApiResponse<T> Success(T data, MetaInfo meta = null) => new()
     {
@@ -40,7 +49,7 @@ public sealed class ApiResponse<T>
         {
             Message = message,
             ErrorCode = ErrorCode.EntityDoesNotExist,
-            Errors = new MissingEntityDto<TEntityId>(id)
+            Errors = new EntityDto<TEntityId>(id)
         };
         return Failure(errorResponse);
     }
@@ -48,12 +57,22 @@ public sealed class ApiResponse<T>
 
 public sealed class MetaInfo
 {
-    // Traceability for support/debugging
+    /// <summary>
+    /// Traceability for support/debugging
+    /// </summary>
     public string TraceId { get; set; }
+    /// <summary>
+    /// Span ID for tracing
+    /// </summary>
     public string SpanId { get; set; }
+    /// <summary>
+    ///  Timestamp of the response
+    /// </summary>
     public DateTimeOffset Timestamp { get; set; }
 
-    // Pagination (optional; set only for list endpoints)
+    /// <summary>
+    /// Pagination (optional; set only for list endpoints)
+    /// </summary>
     public PageMeta Page { get; set; }
     
     // other fields: async, resilience etc.

@@ -3,9 +3,4 @@
 /// <summary>
 /// Represent validation details
 /// </summary>
-public class ValidationError(string field, string message)
-{
-    public string Field { get; } = !string.IsNullOrEmpty(field) ? field : null;
-
-    public string Message { get; } = message;
-}
+public sealed record ValidationError(string Field, string Message);

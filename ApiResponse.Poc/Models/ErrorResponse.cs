@@ -30,7 +30,9 @@ public sealed class ErrorResponse
     public ErrorResponse(ModelStateDictionary modelState)
     {
         ErrorCode = ErrorCode.ValidationFailed;
-        Errors = modelState.Keys.SelectMany(key => modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage)))
+        Errors = modelState.Keys
+            .SelectMany(key => modelState[key].Errors
+                .Select(x => new ValidationError(key, x.ErrorMessage)))
             .ToList();
     }
 }
